@@ -1,26 +1,35 @@
-import React from 'react';
+import React from "react";
+import type { Song } from "../types.js";
 
-const SongPicker = ({ song, selectedVideoId, onSelect }) => {
+interface SongPickerProps {
+  song: Song;
+  selectedVideoId: string | null;
+  onSelect: (videoId: string) => void;
+}
+
+const SongPicker: React.FC<SongPickerProps> = ({ song, selectedVideoId, onSelect }) => {
   return (
     <div className="song-picker">
       <div className="song-info">
         <h3 className="song-title">{song.title}</h3>
       </div>
-      
+
       {song.videos && song.videos.length > 0 ? (
         <div className="video-options-container">
           {song.videos.map((video) => {
             const isSelected = selectedVideoId === video.videoId;
             return (
-              <div 
-                key={video.videoId} 
-                className={`video-thumbnail ${isSelected ? 'selected' : ''}`}
+              <div
+                key={video.videoId}
+                className={`video-thumbnail ${isSelected ? "selected" : ""}`}
                 onClick={() => onSelect(video.videoId)}
               >
                 <div className="thumbnail-img-wrapper">
-                  <img 
-                    src={video.thumbnail || `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`} 
-                    alt={video.title} 
+                  <img
+                    src={
+                      video.thumbnail || `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`
+                    }
+                    alt={video.title}
                     className="thumbnail-img"
                     loading="lazy"
                   />

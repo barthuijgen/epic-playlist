@@ -93,7 +93,9 @@
   cursor: pointer;
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   background: var(--color-surface);
   border: 2px solid transparent;
 }

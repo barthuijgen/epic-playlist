@@ -1,51 +1,49 @@
-import { useState, useEffect } from 'react';
-import './App.css';
-import SagaSection from './components/SagaSection';
-import PlaylistPlayer from './components/PlaylistPlayer';
+import { useState, useEffect } from "react";
+import "./App.css";
+import SagaSection from "./components/SagaSection";
+import PlaylistPlayer from "./components/PlaylistPlayer";
+import { Song, Selections } from "./types";
+import songsJsonRaw from "./data/songs.json";
 
 function App() {
-  const [songsData, setSongsData] = useState([]);
-  const [selections, setSelections] = useState({});
-  const [isPlayerMode, setIsPlayerMode] = useState(false);
-  const [playlistVideos, setPlaylistVideos] = useState([]);
+  const [songsData] = useState<Song[]>(songsJsonRaw as Song[]);
+  const [selections, setSelections] = useState<Selections>({});
+  const [isPlayerMode, setIsPlayerMode] = useState<boolean>(false);
+  const [playlistVideos, setPlaylistVideos] = useState<string[]>([]);
 
   useEffect(() => {
     // Check URL for playlist parameters
     const params = new URLSearchParams(window.location.search);
-    const p = params.get('p');
+    const p = params.get("p");
     if (p) {
-      setPlaylistVideos(p.split(','));
+      setPlaylistVideos(p.split(","));
       setIsPlayerMode(true);
     }
-
-    // Load static JSON data
-    fetch('/src/data/songs.json')
-      .then(res => res.json())
-      .then(data => setSongsData(data))
-      .catch(err => console.error("Error loading songs data:", err));
   }, []);
 
-  const handleSelectVideo = (songId, videoId) => {
-    setSelections(prev => ({
+  const handleSelectVideo = (songId: string, videoId: string) => {
+    setSelections((prev) => ({
       ...prev,
-      [songId]: videoId
+      [songId]: videoId,
     }));
   };
 
   const generatePlaylist = () => {
     // Generate a comma-separated list of selected video IDs
-    const vids = songsData.map(song => {
-      // Use selected video or default to the first one if available
-      return selections[song.id] || (song.videos && song.videos.length > 0 ? song.videos[0].videoId : null);
-    }).filter(v => v !== null);
+    const vids = songsData
+      .map((song) => {
+        // Use selected video or default to the first one if available
+        return selections[song.id] || (song.videos && song.videos.length > 0 ? (song.videos[0]?.videoId ?? null) : null);
+      })
+      .filter((v): v is string => v !== null && v !== undefined);
 
     if (vids.length === 0) {
       alert("No videos selected!");
       return;
     }
 
-    const shareUrl = `${window.location.origin}${window.location.pathname}?p=${vids.join(',')}`;
-    
+    const shareUrl = `${window.location.origin}${window.location.pathname}?p=${vids.join(",")}`;
+
     // Copy to clipboard
     navigator.clipboard.writeText(shareUrl).then(() => {
       alert("Playlist link copied to clipboard!");
@@ -58,9 +56,9 @@ function App() {
   }
 
   // Group songs by saga
-  const sagas = songsData.reduce((acc, song) => {
+  const sagas = songsData.reduce((acc: Record<string, Song[]>, song) => {
     if (!acc[song.saga]) acc[song.saga] = [];
-    acc[song.saga].push(song);
+    acc[song.saga]!.push(song);
     return acc;
   }, {});
 
@@ -73,10 +71,10 @@ function App() {
 
       <main className="main-content">
         {Object.entries(sagas).map(([sagaName, songs]) => (
-          <SagaSection 
-            key={sagaName} 
-            sagaName={sagaName} 
-            songs={songs} 
+          <SagaSection
+            key={sagaName}
+            sagaName={sagaName}
+            songs={songs}
             selections={selections}
             onSelectVideo={handleSelectVideo}
           />
@@ -89,10 +87,8 @@ function App() {
             </button>
           </div>
         )}
-        
-        {songsData.length === 0 && (
-          <div className="loading">Loading songs...</div>
-        )}
+
+        {songsData.length === 0 && <div className="loading">Loading songs...</div>}
       </main>
     </div>
   );
