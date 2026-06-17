@@ -9,9 +9,11 @@
     "lint": "oxlint .",
     "fmt": "oxfmt",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@cloudflare/vite-plugin": "^1.41.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
@@ -23,6 +25,7 @@
     "oxfmt": "^0.55.0",
     "oxlint": "^1.70.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.12"
+    "vite": "^8.0.12",
+    "wrangler": "^4.101.0"
   }
 }
