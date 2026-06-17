@@ -1,15 +1,91 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./App.css";
 import SagaSection from "./components/SagaSection";
 import PlaylistPlayer from "./components/PlaylistPlayer";
-import { Song, Selections } from "./types";
+import StickyActionBar from "./components/StickyActionBar";
+import AuthorSection from "./components/AuthorSection";
+import FillGapsToggle from "./components/FillGapsToggle";
+import { Song, Selections, AuthorStat } from "./types";
 import songsJsonRaw from "./data/songs.json";
 
 function App() {
-  const [songsData] = useState<Song[]>(songsJsonRaw as Song[]);
   const [selections, setSelections] = useState<Selections>({});
   const [isPlayerMode, setIsPlayerMode] = useState<boolean>(false);
   const [playlistVideos, setPlaylistVideos] = useState<string[]>([]);
+  const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
+  const [fillGaps, setFillGaps] = useState<boolean>(false);
+
+  // 1. Initial sorting of videos by views
+  const songsData = useMemo(() => {
+    const data = JSON.parse(JSON.stringify(songsJsonRaw)) as Song[];
+    data.forEach(song => {
+      if (song.videos) {
+        song.videos.sort((a, b) => (b.views || 0) - (a.views || 0));
+      }
+    });
+    return data;
+  }, []);
+
+  // 2. Aggregate author statistics
+  const authorsStats = useMemo(() => {
+    const stats: Record<string, { totalVideos: number, songsCovered: Set<string>, totalViews: number }> = {};
+
+    songsData.forEach(song => {
+      if (!song.videos) return;
+      song.videos.forEach(video => {
+        if (!video.author) return;
+        
+        if (!stats[video.author]) {
+          stats[video.author] = { totalVideos: 0, songsCovered: new Set(), totalViews: 0 };
+        }
+        
+        stats[video.author]!.totalVideos += 1;
+        stats[video.author]!.songsCovered.add(song.id);
+        stats[video.author]!.totalViews += (video.views || 0);
+      });
+    });
+
+    const authorsList: AuthorStat[] = Object.entries(stats).map(([name, data]) => ({
+      name,
+      totalVideos: data.totalVideos,
+      songsCovered: data.songsCovered.size,
+      totalViews: data.totalViews
+    }));
+
+    // Sort by total views descending
+    return authorsList.sort((a, b) => b.totalViews - a.totalViews);
+  }, [songsData]);
+
+  // 3. Filter songs based on selected author
+  const filteredSongsData = useMemo(() => {
+    if (!selectedAuthor) return songsData;
+
+    return songsData.map(song => {
+      if (!song.videos) return null;
+      
+      const hasAuthorVideo = song.videos.some(v => v.author === selectedAuthor);
+      
+      // If strict mode and no video by author, hide the song entirely
+      if (!hasAuthorVideo && !fillGaps) {
+        return null;
+      }
+      
+      // Sort so the selected author's videos are always at the very front.
+      // This ensures they are auto-selected for the playlist!
+      const sortedVideos = [...song.videos].sort((a, b) => {
+        const aIsAuthor = a.author === selectedAuthor ? 1 : 0;
+        const bIsAuthor = b.author === selectedAuthor ? 1 : 0;
+        return bIsAuthor - aIsAuthor;
+      });
+
+      return { ...song, videos: sortedVideos };
+    }).filter((song): song is Song => song !== null);
+  }, [songsData, selectedAuthor, fillGaps]);
+
+  const totalCatalogVideos = useMemo(() => {
+    return songsData.reduce((sum, song) => sum + (song.videos?.length || 0), 0);
+  }, [songsData]);
+
 
   useEffect(() => {
     // Check URL for playlist parameters
@@ -28,27 +104,28 @@ function App() {
     }));
   };
 
-  const generatePlaylist = () => {
-    // Generate a comma-separated list of selected video IDs
-    const vids = songsData
+  const vids = useMemo(() => {
+    return filteredSongsData
       .map((song) => {
-        // Use selected video or default to the first one if available
         return selections[song.id] || (song.videos && song.videos.length > 0 ? (song.videos[0]?.videoId ?? null) : null);
       })
       .filter((v): v is string => v !== null && v !== undefined);
+  }, [filteredSongsData, selections]);
 
+  const shareUrl = useMemo(() => {
+    if (vids.length === 0) return "";
+    return `${window.location.origin}${window.location.pathname}?p=${vids.join(",")}`;
+  }, [vids]);
+
+  const handlePlayNow = () => {
     if (vids.length === 0) {
       alert("No videos selected!");
       return;
     }
-
-    const shareUrl = `${window.location.origin}${window.location.pathname}?p=${vids.join(",")}`;
-
-    // Copy to clipboard
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      alert("Playlist link copied to clipboard!");
-      window.location.href = shareUrl;
-    });
+    // Update URL and enter player mode
+    window.history.pushState({}, '', shareUrl);
+    setPlaylistVideos(vids);
+    setIsPlayerMode(true);
   };
 
   if (isPlayerMode) {
@@ -56,20 +133,38 @@ function App() {
   }
 
   // Group songs by saga
-  const sagas = songsData.reduce((acc: Record<string, Song[]>, song) => {
+  const sagas = filteredSongsData.reduce((acc: Record<string, Song[]>, song) => {
     if (!acc[song.saga]) acc[song.saga] = [];
     acc[song.saga]!.push(song);
     return acc;
   }, {});
 
   return (
-    <div className="app-container">
+    <div className="app-container pb-32">
       <header className="app-header glass">
         <h1 className="text-glow text-accent">Epic The Musical</h1>
         <p className="subtitle">Custom Animated Playlist Generator</p>
+        <p style={{ marginTop: '0.5rem', color: 'var(--color-text-muted)', fontSize: '0.9rem', opacity: 0.8 }}>
+          {totalCatalogVideos} Total Videos in Catalog
+        </p>
       </header>
 
       <main className="main-content">
+        
+        <AuthorSection 
+          authors={authorsStats.slice(0, 50)} // Show top 50 authors
+          selectedAuthor={selectedAuthor}
+          onSelectAuthor={setSelectedAuthor}
+        />
+
+        {selectedAuthor && (
+          <FillGapsToggle 
+            fillGaps={fillGaps}
+            onToggle={setFillGaps}
+            selectedAuthor={selectedAuthor}
+          />
+        )}
+
         {Object.entries(sagas).map(([sagaName, songs]) => (
           <SagaSection
             key={sagaName}
@@ -80,16 +175,14 @@ function App() {
           />
         ))}
 
-        {songsData.length > 0 && (
-          <div className="generate-section">
-            <button className="btn-generate glass glow-hover" onClick={generatePlaylist}>
-              Generate & Share Playlist
-            </button>
-          </div>
-        )}
-
-        {songsData.length === 0 && <div className="loading">Loading songs...</div>}
+        {filteredSongsData.length === 0 && <div className="loading">No songs found matching criteria.</div>}
       </main>
+
+      <StickyActionBar 
+        shareUrl={shareUrl} 
+        onPlayNow={handlePlayNow} 
+        isEnabled={vids.length > 0} 
+      />
     </div>
   );
 }

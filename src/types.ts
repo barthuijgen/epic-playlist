@@ -2,6 +2,8 @@ export interface Video {
   videoId: string;
   title: string;
   thumbnail: string;
+  author?: string;
+  views?: number;
 }
 
 export interface Song {
@@ -13,4 +15,13 @@ export interface Song {
 
 export interface SongsData extends Array<Song> {}
 
-export type Selections = Record<string, string>;
+export interface Selections {
+  [songId: string]: string;
+}
+
+export interface AuthorStat {
+  name: string;
+  totalVideos: number;
+  songsCovered: number;
+  totalViews: number;
+}
