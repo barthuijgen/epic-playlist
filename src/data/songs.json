@@ -824,13 +824,6 @@
         "views": 15717
       },
       {
-        "videoId": "NGD9GJd4e3g",
-        "title": "Wouldn\u2019t You Like (Fan Animation) | EPIC the musical",
-        "thumbnail": "https://img.youtube.com/vi/NGD9GJd4e3g/hqdefault.jpg",
-        "author": "Slander",
-        "views": 9326890
-      },
-      {
         "videoId": "pZB77VuUGAQ",
         "title": "JUST A MAN (Asgore) FULL WIP",
         "thumbnail": "https://img.youtube.com/vi/pZB77VuUGAQ/hqdefault.jpg",
@@ -922,13 +915,6 @@
         "views": 3454
       },
       {
-        "videoId": "jVmSGW5ruyI",
-        "title": "Epic The Musical Trailer Animatic | Cut Version: Full Speed Ahead (Cut song)",
-        "thumbnail": "https://img.youtube.com/vi/jVmSGW5ruyI/hqdefault.jpg",
-        "author": "NERDTROVERT",
-        "views": 11971
-      },
-      {
         "videoId": "ze2KTl-lPts",
         "title": "Full Speed Ahead (FULL SNIPPET) | EPIC: The Musical Animatic",
         "thumbnail": "https://img.youtube.com/vi/ze2KTl-lPts/hqdefault.jpg",
@@ -1011,13 +997,6 @@
         "thumbnail": "https://img.youtube.com/vi/ffbhKcmgENA/hqdefault.jpg",
         "author": "Mason Hallmark",
         "views": 13416
-      },
-      {
-        "videoId": "bqQ1PoOJnXY",
-        "title": "SMASH | an EPIC: The Musical Animatic by Neal Illustrator",
-        "thumbnail": "https://img.youtube.com/vi/bqQ1PoOJnXY/hqdefault.jpg",
-        "author": "Open Arms",
-        "views": 1444561
       },
       {
         "videoId": "fEF-3mhg9ro",
@@ -1853,13 +1832,6 @@
         "views": 82694
       },
       {
-        "videoId": "E9HVgvOYWMk",
-        "title": "Aeolus Cut Song | EPIC: The Musical Animatic",
-        "thumbnail": "https://img.youtube.com/vi/E9HVgvOYWMk/hqdefault.jpg",
-        "author": "gigi",
-        "views": 929811
-      },
-      {
         "videoId": "HQJB8MLyhiU",
         "title": "Keep Your Friends Close || Epic The Musical Animatic! ||",
         "thumbnail": "https://img.youtube.com/vi/HQJB8MLyhiU/hqdefault.jpg",
@@ -2125,6 +2097,13 @@
     "title": "Wouldn't You Like",
     "saga": "The Circe Saga",
     "videos": [
+      {
+        "videoId": "NGD9GJd4e3g",
+        "title": "Wouldn\u2019t You Like (Fan Animation) | EPIC the musical",
+        "thumbnail": "https://img.youtube.com/vi/NGD9GJd4e3g/hqdefault.jpg",
+        "author": "Slander",
+        "views": 9326890
+      },
       {
         "videoId": "sHyL528ZuBY",
         "title": "Wouldn't You Like / EPIC: The Musical Animatic",

@@ -561,36 +561,37 @@ input:checked + .slider:before {
   background: rgba(255, 255, 255, 0.2);
 }
 
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .player-content {
   display: flex;
   flex: 1;
   position: relative;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  gap: 2rem;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
 }
 
 .youtube-wrapper {
   flex: 1;
-  max-width: 1200px;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  height: 100%;
 }
 
 .nav-btn {
   background: rgba(26, 16, 37, 0.8);
   color: var(--color-text);
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   border: 1px solid var(--color-primary);
   transition: all 0.2s;
   cursor: pointer;
@@ -692,7 +693,7 @@ input:checked + .slider:before {
     padding: 1rem;
     flex-direction: column;
     gap: 1rem;
-    align-items: flex-start;
+    align-items: stretch;
   }
   
   .player-title-area {
@@ -700,39 +701,22 @@ input:checked + .slider:before {
     justify-content: space-between;
   }
   
-  .btn-back {
+  .player-controls {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
+    gap: 0.5rem;
+  }
+
+  .btn-back {
+    flex: 1;
     text-align: center;
   }
   
   .player-content {
     flex-direction: column;
-    padding: 1rem;
-    gap: 1.5rem;
+    padding: 0;
+    gap: 0;
     justify-content: flex-start;
-    display: grid;
-    grid-template-areas: 
-      "video video"
-      "prev next";
-    grid-template-rows: auto auto;
-    grid-template-columns: 1fr 1fr;
-    justify-items: center;
-  }
-  
-  .youtube-wrapper {
-    grid-area: video;
-    width: 100%;
-  }
-  
-  .prev-btn {
-    grid-area: prev;
-    justify-self: end;
-    margin-right: 1rem;
-  }
-  
-  .next-btn {
-    grid-area: next;
-    justify-self: start;
-    margin-left: 1rem;
   }
 }

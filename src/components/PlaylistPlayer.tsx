@@ -40,28 +40,37 @@ const PlaylistPlayer: React.FC<PlaylistPlayerProps> = ({ videos }) => {
           <h2 className="text-glow text-primary" style={{ margin: 0 }}>Epic Custom Playlist</h2>
           <span className="playlist-counter">Track {currentIndex + 1} of {videos.length}</span>
         </div>
-        <button 
-          className="btn-back" 
-          onClick={() => {
-            // Remove ?p=... from URL to go back to selection mode
-            window.history.pushState({}, '', window.location.pathname);
-            window.location.reload();
-          }}
-        >
-          Back to Selection
-        </button>
+        <div className="player-controls">
+          <button 
+            className="nav-btn prev-btn" 
+            onClick={handlePrev} 
+            disabled={currentIndex === 0}
+            title="Previous Track"
+          >
+            &lt;
+          </button>
+          <button 
+            className="nav-btn next-btn" 
+            onClick={handleNext} 
+            disabled={currentIndex === videos.length - 1}
+            title="Next Track"
+          >
+            &gt;
+          </button>
+          <button 
+            className="btn-back" 
+            onClick={() => {
+              // Remove ?p=... from URL to go back to selection mode
+              window.history.pushState({}, '', window.location.pathname);
+              window.location.reload();
+            }}
+          >
+            Back to Selection
+          </button>
+        </div>
       </header>
       
       <div className="player-content">
-        <button 
-          className="nav-btn prev-btn" 
-          onClick={handlePrev} 
-          disabled={currentIndex === 0}
-          title="Previous Track"
-        >
-          &lt;
-        </button>
-
         <div className="youtube-wrapper">
           <YouTube
             videoId={currentVideoId}
@@ -79,15 +88,6 @@ const PlaylistPlayer: React.FC<PlaylistPlayerProps> = ({ videos }) => {
             style={{ width: '100%', height: '100%' }}
           />
         </div>
-
-        <button 
-          className="nav-btn next-btn" 
-          onClick={handleNext} 
-          disabled={currentIndex === videos.length - 1}
-          title="Next Track"
-        >
-          &gt;
-        </button>
       </div>
     </div>
   );
