@@ -14,6 +14,24 @@ function App() {
   const [playlistVideos, setPlaylistVideos] = useState<string[]>([]);
   const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
   const [fillGaps, setFillGaps] = useState<boolean>(false);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('epic_favorites');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleFavorite = (videoId: string) => {
+    setFavorites(prev => {
+      const newFavs = prev.includes(videoId) 
+        ? prev.filter(id => id !== videoId)
+        : [...prev, videoId];
+      localStorage.setItem('epic_favorites', JSON.stringify(newFavs));
+      return newFavs;
+    });
+  };
 
   // 1. Initial sorting of videos by views
   const songsData = useMemo(() => {
@@ -56,31 +74,42 @@ function App() {
     return authorsList.sort((a, b) => b.totalViews - a.totalViews);
   }, [songsData]);
 
-  // 3. Filter songs based on selected author
+  // 3. Filter songs based on selected author and sort by favorites
   const filteredSongsData = useMemo(() => {
-    if (!selectedAuthor) return songsData;
-
     return songsData.map(song => {
       if (!song.videos) return null;
       
-      const hasAuthorVideo = song.videos.some(v => v.author === selectedAuthor);
+      const hasAuthorVideo = selectedAuthor ? song.videos.some(v => v.author === selectedAuthor) : false;
       
       // If strict mode and no video by author, hide the song entirely
-      if (!hasAuthorVideo && !fillGaps) {
+      if (selectedAuthor && !hasAuthorVideo && !fillGaps) {
         return null;
       }
       
-      // Sort so the selected author's videos are always at the very front.
-      // This ensures they are auto-selected for the playlist!
-      const sortedVideos = [...song.videos].sort((a, b) => {
-        const aIsAuthor = a.author === selectedAuthor ? 1 : 0;
-        const bIsAuthor = b.author === selectedAuthor ? 1 : 0;
-        return bIsAuthor - aIsAuthor;
+      // If strict mode, only show videos by the selected author
+      let filteredVideos = song.videos;
+      if (selectedAuthor && !fillGaps) {
+        filteredVideos = filteredVideos.filter(v => v.author === selectedAuthor);
+      }
+      
+      // Sort: Selected author first, then favorites, then views
+      const sortedVideos = [...filteredVideos].sort((a, b) => {
+        if (selectedAuthor) {
+          const aIsAuthor = a.author === selectedAuthor ? 1 : 0;
+          const bIsAuthor = b.author === selectedAuthor ? 1 : 0;
+          if (aIsAuthor !== bIsAuthor) return bIsAuthor - aIsAuthor;
+        }
+
+        const aIsFav = favorites.includes(a.videoId) ? 1 : 0;
+        const bIsFav = favorites.includes(b.videoId) ? 1 : 0;
+        if (aIsFav !== bIsFav) return bIsFav - aIsFav;
+
+        return (b.views || 0) - (a.views || 0);
       });
 
       return { ...song, videos: sortedVideos };
     }).filter((song): song is Song => song !== null);
-  }, [songsData, selectedAuthor, fillGaps]);
+  }, [songsData, selectedAuthor, fillGaps, favorites]);
 
   const totalCatalogVideos = useMemo(() => {
     return songsData.reduce((sum, song) => sum + (song.videos?.length || 0), 0);
@@ -172,6 +201,8 @@ function App() {
             songs={songs}
             selections={selections}
             onSelectVideo={handleSelectVideo}
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
           />
         ))}
 

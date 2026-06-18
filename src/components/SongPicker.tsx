@@ -7,9 +7,11 @@ interface SongPickerProps {
   song: Song;
   selectedVideoId: string | null;
   onSelect: (videoId: string) => void;
+  favorites: string[];
+  toggleFavorite: (videoId: string) => void;
 }
 
-const SongPicker: React.FC<SongPickerProps> = ({ song, selectedVideoId, onSelect }) => {
+const SongPicker: React.FC<SongPickerProps> = ({ song, selectedVideoId, onSelect, favorites, toggleFavorite }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -136,7 +138,16 @@ const SongPicker: React.FC<SongPickerProps> = ({ song, selectedVideoId, onSelect
             {!isPreviewing && <div className="selected-badge hero-badge">Selected</div>}
           </div>
           <div className="hero-details">
-            <h4 className="hero-title" title={heroVideo.title}>{heroVideo.title}</h4>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <h4 className="hero-title" title={heroVideo.title}>{heroVideo.title}</h4>
+              <button 
+                className={`btn-favorite ${favorites.includes(heroVideo.videoId) ? 'active' : ''}`}
+                onClick={(e) => { e.stopPropagation(); toggleFavorite(heroVideo!.videoId); }}
+                title={favorites.includes(heroVideo.videoId) ? "Remove from Favorites" : "Add to Favorites"}
+              >
+                {favorites.includes(heroVideo.videoId) ? '★' : '☆'}
+              </button>
+            </div>
             <div className="hero-meta">
               {heroVideo.author && <span className="author">{heroVideo.author}</span>}
               {heroVideo.views !== undefined && <span className="views">{formatViews(heroVideo.views)}</span>}
@@ -173,6 +184,9 @@ const SongPicker: React.FC<SongPickerProps> = ({ song, selectedVideoId, onSelect
                       loading="lazy"
                       draggable="false"
                     />
+                    {favorites.includes(video.videoId) && (
+                      <span className="favorite-badge">★</span>
+                    )}
                   </div>
                   <div className="thumbnail-details">
                     <div className="thumbnail-title" title={video.title}>{video.title}</div>
@@ -217,6 +231,9 @@ const SongPicker: React.FC<SongPickerProps> = ({ song, selectedVideoId, onSelect
                           loading="lazy"
                         />
                         {isSelected && <span className="selected-badge">Selected</span>}
+                        {favorites.includes(video.videoId) && (
+                          <span className="favorite-badge">★</span>
+                        )}
                       </div>
                       <div className="thumbnail-details">
                         <div className="thumbnail-title" title={video.title}>{video.title}</div>

@@ -41,7 +41,7 @@ def fetch_metadata(video_id):
                         "title": data.get("title", ""),
                         "author": data.get("uploader", ""),
                         "views": data.get("view_count", 0),
-                        "thumbnail": f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+                        "duration": data.get("duration", 0)
                     }
     except Exception as e:
         print(f"Exception fetching {video_id}: {e}")
@@ -70,7 +70,7 @@ def main():
                 video.get("title"),
                 video.get("author"),
                 video.get("views") is not None,
-                video.get("thumbnail")
+                video.get("duration") is not None
             ])
 
             if has_all_fields and not force_update:
@@ -82,8 +82,8 @@ def main():
                 video["title"] = meta["title"]
                 video["author"] = meta["author"]
                 video["views"] = meta["views"]
-                video["thumbnail"] = meta["thumbnail"]
-                print(f"Updated! ({meta['views']} views)")
+                video["duration"] = meta["duration"]
+                print(f"Updated! ({meta['views']} views, {meta['duration']}s)")
             else:
                 print("Failed to update.")
             

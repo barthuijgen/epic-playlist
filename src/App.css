@@ -1034,3 +1034,46 @@ input:checked + .slider:before {
   border-color: transparent !important;
 }
 
+/* --- Favorites System --- */
+
+.btn-favorite {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.btn-favorite:hover {
+  color: var(--color-text);
+  transform: scale(1.1);
+}
+
+.btn-favorite.active {
+  color: var(--color-accent);
+  text-shadow: 0 0 10px rgba(123, 31, 162, 0.8);
+}
+
+.favorite-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--color-accent);
+  font-size: 1rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+

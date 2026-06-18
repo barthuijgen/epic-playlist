@@ -6,6 +6,7 @@ import json
 import subprocess
 import time
 import sys
+import re
 
 SONGS_FILE = "src/data/songs.json"
 BLACKLIST_FILE = "src/data/blacklist.json"
@@ -13,8 +14,18 @@ BLACKLIST_FILE = "src/data/blacklist.json"
 def get_blacklist():
     if os.path.exists(BLACKLIST_FILE):
         with open(BLACKLIST_FILE, "r") as f:
-            return set(json.load(f))
-    return set()
+            try:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+                return {}
+            except json.JSONDecodeError:
+                return {}
+    return {}
+
+def save_blacklist(blacklist):
+    with open(BLACKLIST_FILE, "w") as f:
+        json.dump(blacklist, f, indent=2)
 
 def load_songs():
     if os.path.exists(SONGS_FILE):
@@ -27,7 +38,25 @@ def save_songs(songs):
     with open(SONGS_FILE, "w") as f:
         json.dump(songs, f, indent=2)
 
-def is_valid_animatic(title, author, description, target_song):
+def parse_duration_to_seconds(duration_str):
+    if not duration_str or duration_str == "Unknown":
+        return None
+    try:
+        parts = duration_str.split(":")
+        if len(parts) == 2:
+            return int(parts[0]) * 60 + int(parts[1])
+        elif len(parts) == 3:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+    except:
+        pass
+    return None
+
+def is_valid_animatic(title, author, description, target_song, target_duration_str, video_duration_sec):
+    video_duration_str = "Unknown"
+    if video_duration_sec:
+        m, s = divmod(int(video_duration_sec), 60)
+        video_duration_str = f"{m}:{s:02d}"
+
     prompt = f"""
     You are an AI assistant tasked with filtering YouTube search results for "Epic The Musical" playlists.
     We ONLY want genuine fan-made "Animatics" or "Animations" specifically for the song "{target_song}".
@@ -35,6 +64,8 @@ def is_valid_animatic(title, author, description, target_song):
     Video Title: {title}
     Channel Name: {author}
     Description: {description}
+    Video Duration: {video_duration_str}
+    Official Song Duration: {target_duration_str}
     
     Is this a genuine animatic or animation specifically for the song "{target_song}"? 
     It is NOT a valid match if it is:
@@ -43,23 +74,40 @@ def is_valid_animatic(title, author, description, target_song):
     - Just the original song audio with a static image
     - A cover of the song without an animation
     - A podcast, tier list, or discussion
+    - Significantly longer than the official song (might contain long intros/outros or multiple songs)
+    - Significantly shorter than the official song (might only be a partial cover)
     
-    Reply ONLY with the exact word "YES" or "NO".
+    If it is a valid animatic, reply ONLY with the exact word "YES".
+    If it is NOT a valid match, reply with "NO. " followed by a short, one-sentence reason why it is rejected.
     """
     
     try:
         result = subprocess.run(["kimi", "-p", prompt], capture_output=True, text=True)
-        answer = result.stdout.strip().upper()
-        return "YES" in answer
+        answer = result.stdout.strip()
+        
+        # Remove any leading non-alphabet characters (like bullets, dashes, spaces)
+        clean_answer = re.sub(r'^[^a-zA-Z]+', '', answer)
+        
+        if clean_answer.upper().startswith("YES"):
+            return True, None
+        elif clean_answer.upper().startswith("NO"):
+            reason = clean_answer[2:].strip(" .:-")
+            return False, reason if reason else "No reason provided."
+        else:
+            return False, answer
     except Exception as e:
         print(f"Error calling kimi CLI: {e}")
         # Fallback keyword check if CLI fails
         lower_title = title.lower()
         if "reaction" in lower_title or "reacts" in lower_title:
-            return False
-        return True
+            return False, "Reaction keyword detected by fallback filter."
+        return True, None
 
-def fetch_videos_for_song(song_title, existing_video_ids, blacklist):
+def fetch_videos_for_song(song, existing_video_ids, blacklist_data, song_blacklist, blacklist_ids):
+    song_title = song["title"]
+    target_duration = song.get("duration", "Unknown")
+    target_duration_sec = parse_duration_to_seconds(target_duration)
+    
     print(f"\nSearching for: {song_title}")
     query = f"ytsearch100:{song_title} epic the musical animatic"
     
@@ -92,27 +140,47 @@ def fetch_videos_for_song(song_title, existing_video_ids, blacklist):
         video_id = data.get("id")
         
         # Skip duplicates and blacklisted videos
-        if video_id in existing_video_ids or video_id in blacklist:
+        if video_id in existing_video_ids or video_id in blacklist_ids:
             continue
             
         title = data.get("title", "")
         author = data.get("uploader", "")
         description = data.get("description", "")
         views = data.get("view_count", 0)
+        video_duration = data.get("duration", 0)
         
+        video_obj = {
+            "videoId": video_id,
+            "title": title,
+            "author": author,
+            "views": views,
+            "duration": video_duration
+        }
+
+        # Auto-reject if video is more than 10 seconds shorter than the original song
+        if target_duration_sec is not None and video_duration is not None and video_duration > 0:
+            if video_duration < (target_duration_sec - 10):
+                video_obj["rejectReason"] = f"Auto-rejected: Too short ({video_duration}s vs {target_duration_sec}s)"
+                song_blacklist.append(video_obj)
+                blacklist_ids.add(video_id)
+                # Save blacklist progressively
+                save_blacklist(blacklist_data)
+                print(f"  [-] Auto-Rejected (Too short: {video_duration}s vs {target_duration_sec}s): {title}")
+                continue
+
         # Smart Filter
-        if is_valid_animatic(title, author, description, song_title):
-            videos.append({
-                "videoId": video_id,
-                "title": title,
-                "thumbnail": f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg",
-                "author": author,
-                "views": views
-            })
+        is_valid, reason = is_valid_animatic(title, author, description, song_title, target_duration, video_duration)
+        if is_valid:
+            videos.append(video_obj)
             existing_video_ids.add(video_id)
             print(f"  [+] Added: {title} by {author}")
         else:
-            print(f"  [-] Rejected by AI: {title}")
+            video_obj["rejectReason"] = reason
+            song_blacklist.append(video_obj)
+            blacklist_ids.add(video_id)
+            # Save blacklist progressively
+            save_blacklist(blacklist_data)
+            print(f"  [-] Rejected by AI: {title} (Reason: {reason})")
             
     return videos
 
@@ -123,7 +191,7 @@ def main():
     if not songs:
         return
         
-    blacklist = get_blacklist()
+    blacklist_data = get_blacklist()
     
     for song in songs:
         if target_song_id and song.get("id") != target_song_id:
@@ -132,9 +200,22 @@ def main():
         if "videos" not in song:
             song["videos"] = []
             
+        song_id = song.get("id")
+        if song_id not in blacklist_data:
+            blacklist_data[song_id] = []
+            
+        song_blacklist = blacklist_data[song_id]
+        
+        blacklist_ids = set()
+        for item in song_blacklist:
+            if isinstance(item, dict):
+                blacklist_ids.add(item.get("videoId"))
+            else:
+                blacklist_ids.add(item)
+        
         existing_video_ids = set(v["videoId"] for v in song["videos"])
         
-        new_videos = fetch_videos_for_song(song["title"], existing_video_ids, blacklist)
+        new_videos = fetch_videos_for_song(song, existing_video_ids, blacklist_data, song_blacklist, blacklist_ids)
         
         if new_videos:
             song["videos"].extend(new_videos)
