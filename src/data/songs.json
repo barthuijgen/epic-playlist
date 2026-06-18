@@ -3,6 +3,7 @@
     "id": "the-horse-and-the-infant",
     "title": "The Horse and the Infant",
     "saga": "The Troy Saga",
+    "duration": "3:54",
     "videos": [
       {
         "videoId": "OE8TQBqWVV8",
@@ -507,6 +508,7 @@
     "id": "just-a-man",
     "title": "Just a Man",
     "saga": "The Troy Saga",
+    "duration": "2:29",
     "videos": [
       {
         "videoId": "glYh3O2Rcz8",
@@ -857,6 +859,7 @@
     "id": "full-speed-ahead",
     "title": "Full Speed Ahead",
     "saga": "The Troy Saga",
+    "duration": "2:59",
     "videos": [
       {
         "videoId": "Wm_Ayf_adXo",
@@ -955,6 +958,7 @@
     "id": "open-arms",
     "title": "Open Arms",
     "saga": "The Troy Saga",
+    "duration": "3:19",
     "videos": [
       {
         "videoId": "bKMgFJq88Is",
@@ -1053,6 +1057,7 @@
     "id": "warrior-of-the-mind",
     "title": "Warrior of the Mind",
     "saga": "The Troy Saga",
+    "duration": "3:28",
     "videos": [
       {
         "videoId": "nMmrtgbFmOg",
@@ -1144,6 +1149,7 @@
     "id": "polyphemus",
     "title": "Polyphemus",
     "saga": "The Cyclops Saga",
+    "duration": "3:36",
     "videos": [
       {
         "videoId": "Nw7H13aW3uo",
@@ -1263,6 +1269,7 @@
     "id": "survive",
     "title": "Survive",
     "saga": "The Cyclops Saga",
+    "duration": "3:15",
     "videos": [
       {
         "videoId": "zG6--6DE_LE",
@@ -1333,6 +1340,7 @@
     "id": "remember-them",
     "title": "Remember Them",
     "saga": "The Cyclops Saga",
+    "duration": "4:09",
     "videos": [
       {
         "videoId": "fHqslF9e02I",
@@ -1438,6 +1446,7 @@
     "id": "my-goodbye",
     "title": "My Goodbye",
     "saga": "The Cyclops Saga",
+    "duration": "3:18",
     "videos": [
       {
         "videoId": "w2TPBnAcJMI",
@@ -1571,6 +1580,7 @@
     "id": "storm",
     "title": "Storm",
     "saga": "The Ocean Saga",
+    "duration": "2:43",
     "videos": [
       {
         "videoId": "2JFLwhARquw",
@@ -1648,6 +1658,7 @@
     "id": "luck-runs-out",
     "title": "Luck Runs Out",
     "saga": "The Ocean Saga",
+    "duration": "3:01",
     "videos": [
       {
         "videoId": "QAJ8DYKQqm8",
@@ -1746,6 +1757,7 @@
     "id": "keep-your-friends-close",
     "title": "Keep Your Friends Close",
     "saga": "The Ocean Saga",
+    "duration": "4:08",
     "videos": [
       {
         "videoId": "UGYny6uI2bA",
@@ -1879,6 +1891,7 @@
     "id": "ruthlessness",
     "title": "Ruthlessness",
     "saga": "The Ocean Saga",
+    "duration": "4:23",
     "videos": [
       {
         "videoId": "WOgxiS33tME",
@@ -2019,6 +2032,7 @@
     "id": "puppeteer",
     "title": "Puppeteer",
     "saga": "The Circe Saga",
+    "duration": "4:10",
     "videos": [
       {
         "videoId": "tso8nSWnENM",
@@ -2096,6 +2110,7 @@
     "id": "wouldnt-you-like",
     "title": "Wouldn't You Like",
     "saga": "The Circe Saga",
+    "duration": "2:54",
     "videos": [
       {
         "videoId": "NGD9GJd4e3g",
@@ -2222,6 +2237,7 @@
     "id": "done-for",
     "title": "Done For",
     "saga": "The Circe Saga",
+    "duration": "2:27",
     "videos": [
       {
         "videoId": "khS-p6-Qwx0",
@@ -2341,6 +2357,7 @@
     "id": "there-are-other-ways",
     "title": "There Are Other Ways",
     "saga": "The Circe Saga",
+    "duration": "3:27",
     "videos": [
       {
         "videoId": "6m5-SvPGyO4",
@@ -2444,6 +2461,7 @@
     "id": "the-underworld",
     "title": "The Underworld",
     "saga": "The Underworld Saga",
+    "duration": "4:17",
     "videos": [
       {
         "videoId": "PbVJaMIrQ7g",
@@ -2556,6 +2574,7 @@
     "id": "no-longer-you",
     "title": "No Longer You",
     "saga": "The Underworld Saga",
+    "duration": "2:48",
     "videos": [
       {
         "videoId": "qsFDBVbnwvo",
@@ -2675,6 +2694,7 @@
     "id": "monster",
     "title": "Monster",
     "saga": "The Underworld Saga",
+    "duration": "3:39",
     "videos": [
       {
         "videoId": "qYDms9Z-02A",
@@ -2787,6 +2807,7 @@
     "id": "suffering",
     "title": "Suffering",
     "saga": "The Thunder Saga",
+    "duration": "2:31",
     "videos": [
       {
         "videoId": "YTAmdHZH0Y4",
@@ -2913,6 +2934,7 @@
     "id": "different-beast",
     "title": "Different Beast",
     "saga": "The Thunder Saga",
+    "duration": "3:31",
     "videos": [
       {
         "videoId": "29z2ooCYGfE",
@@ -3039,6 +3061,7 @@
     "id": "scylla",
     "title": "Scylla",
     "saga": "The Thunder Saga",
+    "duration": "2:54",
     "videos": [
       {
         "videoId": "WrFCnt-Fqpc",
@@ -3158,6 +3181,7 @@
     "id": "mutiny",
     "title": "Mutiny",
     "saga": "The Thunder Saga",
+    "duration": "4:53",
     "videos": [
       {
         "videoId": "B9X-Xe9PxOI",
@@ -3277,6 +3301,7 @@
     "id": "thunder-bringer",
     "title": "Thunder Bringer",
     "saga": "The Thunder Saga",
+    "duration": "4:10",
     "videos": [
       {
         "videoId": "gtKNgFftV5Y",
@@ -3389,6 +3414,7 @@
     "id": "legendary",
     "title": "Legendary",
     "saga": "The Wisdom Saga",
+    "duration": "3:14",
     "videos": [
       {
         "videoId": "nxDH6Dbyhi4",
@@ -3513,6 +3539,7 @@
     "id": "little-wolf",
     "title": "Little Wolf",
     "saga": "The Wisdom Saga",
+    "duration": "3:14",
     "videos": [
       {
         "videoId": "BPiJF7rceiA",
@@ -3646,6 +3673,7 @@
     "id": "well-be-fine",
     "title": "We'll Be Fine",
     "saga": "The Wisdom Saga",
+    "duration": "2:06",
     "videos": [
       {
         "videoId": "DR26QjyF__g",
@@ -3772,6 +3800,7 @@
     "id": "love-in-paradise",
     "title": "Love in Paradise",
     "saga": "The Wisdom Saga",
+    "duration": "4:11",
     "videos": [
       {
         "videoId": "xPF2xNMGy10",
@@ -3919,6 +3948,7 @@
     "id": "god-games",
     "title": "God Games",
     "saga": "The Wisdom Saga",
+    "duration": "5:20",
     "videos": [
       {
         "videoId": "z_5Hokpu0vg",
@@ -4031,6 +4061,7 @@
     "id": "not-sorry-for-loving-you",
     "title": "Not Sorry for Loving You",
     "saga": "The Vengeance Saga",
+    "duration": "3:05",
     "videos": [
       {
         "videoId": "Q5i2-51LS20",
@@ -4164,6 +4195,7 @@
     "id": "dangerous",
     "title": "Dangerous",
     "saga": "The Vengeance Saga",
+    "duration": "3:24",
     "videos": [
       {
         "videoId": "zJhJ5E1hK2A",
@@ -4283,6 +4315,7 @@
     "id": "charybdis",
     "title": "Charybdis",
     "saga": "The Vengeance Saga",
+    "duration": "2:14",
     "videos": [
       {
         "videoId": "PAmy8jhQUmA",
@@ -4395,6 +4428,7 @@
     "id": "get-in-the-water",
     "title": "Get in the Water",
     "saga": "The Vengeance Saga",
+     "duration": "3:14",
     "videos": [
       {
         "videoId": "HoEjFMwsQ5M",
@@ -4493,6 +4527,7 @@
     "id": "six-hundred-strike",
     "title": "Six Hundred Strike",
     "saga": "The Vengeance Saga",
+    "duration": "3:32",
     "videos": [
       {
         "videoId": "zov6NXIAuow",
@@ -4605,6 +4640,7 @@
     "id": "the-challenge",
     "title": "The Challenge",
     "saga": "The Ithaca Saga",
+    "duration": "3:22",
     "videos": [
       {
         "videoId": "Ke3Igp5CbQQ",
@@ -4738,6 +4774,7 @@
     "id": "hold-them-down",
     "title": "Hold Them Down",
     "saga": "The Ithaca Saga",
+    "duration": "3:04",
     "videos": [
       {
         "videoId": "6YfhMMHizoY",
@@ -4850,6 +4887,7 @@
     "id": "odysseus",
     "title": "Odysseus",
     "saga": "The Ithaca Saga",
+    "duration": "5:32",
     "videos": [
       {
         "videoId": "O-o79ZZBNXw",
@@ -4941,6 +4979,7 @@
     "id": "i-cant-help-but-wonder",
     "title": "I Can't Help but Wonder",
     "saga": "The Ithaca Saga",
+    "duration": "4:52",
     "videos": [
       {
         "videoId": "tA9srbefWfk",
@@ -5046,6 +5085,7 @@
     "id": "would-you-fall-in-love-with-me-again",
     "title": "Would You Fall in Love with Me Again",
     "saga": "The Ithaca Saga",
+    "duration": "5:46",
     "videos": [
       {
         "videoId": "8Pup8OHaHn4",
