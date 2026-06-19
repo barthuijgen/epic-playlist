@@ -83,8 +83,23 @@ def is_valid_animatic(title, author, description, target_song, target_duration_s
     
     try:
         result = subprocess.run(["kimi", "-p", prompt], capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            print(f"Error from kimi CLI (code {result.returncode}): {result.stderr.strip()}")
+            lower_title = title.lower()
+            if "reaction" in lower_title or "reacts" in lower_title:
+                return False, "Reaction keyword detected by fallback filter (CLI error)."
+            return True, None
+            
         answer = result.stdout.strip()
         
+        if not answer:
+            print(f"Empty response from kimi CLI. stderr: {result.stderr.strip()}")
+            lower_title = title.lower()
+            if "reaction" in lower_title or "reacts" in lower_title:
+                return False, "Reaction keyword detected by fallback filter (Empty response)."
+            return True, None
+            
         # Remove any leading non-alphabet characters (like bullets, dashes, spaces)
         clean_answer = re.sub(r'^[^a-zA-Z]+', '', answer)
         
@@ -94,7 +109,7 @@ def is_valid_animatic(title, author, description, target_song, target_duration_s
             reason = clean_answer[2:].strip(" .:-")
             return False, reason if reason else "No reason provided."
         else:
-            return False, answer
+            return False, answer if answer else "Unrecognized response format."
     except Exception as e:
         print(f"Error calling kimi CLI: {e}")
         # Fallback keyword check if CLI fails
