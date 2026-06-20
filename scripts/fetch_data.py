@@ -124,7 +124,8 @@ def fetch_videos_for_song(song, existing_video_ids, blacklist_data, song_blackli
     target_duration_sec = parse_duration_to_seconds(target_duration)
     
     print(f"\nSearching for: {song_title}")
-    query = f"ytsearch100:{song_title} epic the musical animatic"
+    # Enclose song_title and "epic the musical" in quotes to make YouTube search stricter
+    query = f'ytsearch100:"{song_title}" "epic the musical" animatic'
     
     # Use uvx to run yt-dlp without needing global installation
     cmd = [
@@ -143,6 +144,10 @@ def fetch_videos_for_song(song, existing_video_ids, blacklist_data, song_blackli
         
     videos = []
     lines = result.stdout.strip().split('\n')
+    
+    # Significant words from song title for pre-filtering
+    stopwords = {"the", "and", "of", "in", "to", "a", "is", "for", "on", "with", "it", "my", "me", "you", "i"}
+    song_words = set(w for w in re.findall(r'[a-z]+', song_title.lower()) if w not in stopwords and len(w) > 2)
     
     for line in lines:
         if not line:
@@ -181,6 +186,20 @@ def fetch_videos_for_song(song, existing_video_ids, blacklist_data, song_blackli
                 # Save blacklist progressively
                 save_blacklist(blacklist_data)
                 print(f"  [-] Auto-Rejected (Too short: {video_duration}s vs {target_duration_sec}s): {title}")
+                continue
+
+        # Pre-filter: Check if video title or description contains the song's significant words
+        # This saves AI credits on videos that YouTube returned but clearly don't match the song
+        vid_text = f"{title} {description}".lower()
+        if song_words:
+            matched_words = [w for w in song_words if w in vid_text]
+            # Require at least 50% of significant words to match
+            if len(matched_words) / len(song_words) < 0.5:
+                video_obj["rejectReason"] = f"Auto-rejected: Missing song title keywords"
+                song_blacklist.append(video_obj)
+                blacklist_ids.add(video_id)
+                save_blacklist(blacklist_data)
+                print(f"  [-] Auto-Rejected (Missing title keywords): {title}")
                 continue
 
         # Smart Filter
